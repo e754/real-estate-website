@@ -1,5 +1,5 @@
-import { Card, CardContent } from "@/components/ui/card"
-import { ContactForm } from "@/components/contact-form"
+import { Card, CardContent } from "../../components/ui/card"
+import { ContactForm } from "../../components/contact-form"
 import { MapPin, Phone, Mail, Clock, Globe } from "lucide-react"
 
 export default function ContactPage() {

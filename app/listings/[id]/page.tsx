@@ -1,46 +1,60 @@
+"use client"
+
+import { useState, useEffect } from "react"
 import Image from "next/image"
 import Link from "next/link"
-import { Badge } from "@/components/ui/badge"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Card, CardContent } from "@/components/ui/card"
+import { Badge } from "../../../components/ui/badge"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../../components/ui/tabs"
+import { Card, CardContent } from "../../../components/ui/card"
 import { Bed, Bath, Square, MapPin, Calendar, Home, ArrowLeft, QrCode } from "lucide-react"
-import { ContactForm } from "@/components/contact-form"
-import { AgentProfile } from "@/components/agent-profile"
+import { ContactForm } from "../../../components/contact-form"
+import { AgentProfile } from "../../../components/agent-profile"
+import type { Listing } from "../../../types/listing"
 
 export default function PropertyDetailPage({ params }: { params: { id: string } }) {
-  // This would normally fetch data based on the ID
-  const property = {
-    id: params.id,
-    title: "Modern Lakefront Villa",
-    price: "$1,250,000",
-    address: "123 Lakeview Dr, Lakeside, MA",
-    description:
-      "This stunning lakefront villa offers breathtaking views and luxury living. With 4 bedrooms, 3 bathrooms, and over 2,800 square feet of living space, this home provides ample room for family and guests. The open floor plan features high ceilings, hardwood floors, and large windows that flood the space with natural light. The gourmet kitchen includes top-of-the-line appliances, granite countertops, and a large island. The primary suite boasts a spa-like bathroom and walk-in closet. Outside, enjoy the private dock, landscaped garden, and covered patio perfect for entertaining.",
-    beds: 4,
-    baths: 3,
-    sqft: 2800,
-    yearBuilt: 2018,
-    lotSize: "0.5 acres",
-    garage: "2-car attached",
-    type: "Single Family Home",
-    features: [
-      "Lakefront Property",
-      "Private Dock",
-      "Gourmet Kitchen",
-      "Hardwood Floors",
-      "High Ceilings",
-      "Walk-in Closets",
-      "Central Air",
-      "Fireplace",
-      "Covered Patio",
-      "Landscaped Garden",
-    ],
-    images: [
-      "/placeholder.svg?height=600&width=800",
-      "/placeholder.svg?height=600&width=800",
-      "/placeholder.svg?height=600&width=800",
-      "/placeholder.svg?height=600&width=800",
-    ],
+  const [listing, setListing] = useState<Listing | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    const fetchListing = async () => {
+      try {
+        const response = await fetch(`/api/listings/${params.id}`)
+        if (response.ok) {
+          const data = await response.json()
+          setListing(data)
+        } else {
+          console.error("Failed to fetch listing")
+        }
+      } catch (error) {
+        console.error("Error fetching listing:", error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+
+    fetchListing()
+  }, [params.id])
+
+  if (isLoading) {
+    return (
+      <div className="container py-10">
+        <div className="flex justify-center py-20">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600"></div>
+        </div>
+      </div>
+    )
+  }
+
+  if (!listing) {
+    return (
+      <div className="container py-10">
+        <h1 className="text-2xl font-bold">Listing not found</h1>
+        <p className="mt-4">The listing you are looking for does not exist or has been removed.</p>
+        <Link href="/listings" className="text-red-600 hover:underline mt-4 inline-block">
+          Return to listings
+        </Link>
+      </div>
+    )
   }
 
   return (
@@ -56,60 +70,66 @@ export default function PropertyDetailPage({ params }: { params: { id: string } 
             <div>
               <div className="flex flex-wrap items-start justify-between gap-4">
                 <div>
-                  <h1 className="text-3xl font-bold">{property.title}</h1>
+                  <h1 className="text-3xl font-bold">{listing.title}</h1>
                   <div className="flex items-center mt-2 text-muted-foreground">
                     <MapPin className="h-4 w-4 mr-1" />
-                    <span>{property.address}</span>
+                    <span>{listing.address}</span>
                   </div>
                 </div>
-                <div className="text-3xl font-bold text-primary">{property.price}</div>
+                <div className="text-3xl font-bold text-primary">{listing.price}</div>
               </div>
 
               <div className="flex flex-wrap gap-4 mt-4">
                 <Badge variant="outline" className="flex items-center gap-1 text-sm py-1.5">
                   <Bed className="h-4 w-4" />
-                  {property.beds} Beds
+                  {listing.beds} Beds
                 </Badge>
                 <Badge variant="outline" className="flex items-center gap-1 text-sm py-1.5">
                   <Bath className="h-4 w-4" />
-                  {property.baths} Baths
+                  {listing.baths} Baths
                 </Badge>
                 <Badge variant="outline" className="flex items-center gap-1 text-sm py-1.5">
                   <Square className="h-4 w-4" />
-                  {property.sqft} sq ft
+                  {listing.sqft} sq ft
                 </Badge>
-                <Badge variant="outline" className="flex items-center gap-1 text-sm py-1.5">
-                  <Calendar className="h-4 w-4" />
-                  Built {property.yearBuilt}
-                </Badge>
-                <Badge variant="outline" className="flex items-center gap-1 text-sm py-1.5">
-                  <Home className="h-4 w-4" />
-                  {property.type}
-                </Badge>
+                {listing.yearBuilt && (
+                  <Badge variant="outline" className="flex items-center gap-1 text-sm py-1.5">
+                    <Calendar className="h-4 w-4" />
+                    Built {listing.yearBuilt}
+                  </Badge>
+                )}
+                {listing.type && (
+                  <Badge variant="outline" className="flex items-center gap-1 text-sm py-1.5">
+                    <Home className="h-4 w-4" />
+                    {listing.type}
+                  </Badge>
+                )}
               </div>
             </div>
 
             <div className="relative aspect-[16/9] overflow-hidden rounded-lg">
               <Image
-                src={property.images[0] || "/placeholder.svg"}
-                alt={property.title}
+                src={listing.images?.[0] || listing.imageSrc || "/placeholder.svg"}
+                alt={listing.title}
                 fill
                 className="object-cover"
               />
             </div>
 
-            <div className="grid grid-cols-3 gap-2">
-              {property.images.slice(1).map((image, index) => (
-                <div key={index} className="relative aspect-[4/3] overflow-hidden rounded-lg">
-                  <Image
-                    src={image || "/placeholder.svg"}
-                    alt={`${property.title} - Image ${index + 2}`}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-              ))}
-            </div>
+            {listing.images && listing.images.length > 1 && (
+              <div className="grid grid-cols-3 gap-2">
+                {listing.images.slice(1).map((image, index) => (
+                  <div key={index} className="relative aspect-[4/3] overflow-hidden rounded-lg">
+                    <Image
+                      src={image || "/placeholder.svg"}
+                      alt={`${listing.title} - Image ${index + 2}`}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
+                ))}
+              </div>
+            )}
 
             <Tabs defaultValue="details">
               <TabsList className="grid w-full grid-cols-3">
@@ -120,47 +140,57 @@ export default function PropertyDetailPage({ params }: { params: { id: string } 
               <TabsContent value="details" className="pt-6">
                 <div className="space-y-4">
                   <h2 className="text-2xl font-semibold">Property Details</h2>
-                  <p className="text-muted-foreground">{property.description}</p>
+                  <p className="text-muted-foreground">{listing.description}</p>
 
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-4 pt-4">
                     <div>
                       <h3 className="font-medium">Bedrooms</h3>
-                      <p>{property.beds}</p>
+                      <p>{listing.beds}</p>
                     </div>
                     <div>
                       <h3 className="font-medium">Bathrooms</h3>
-                      <p>{property.baths}</p>
+                      <p>{listing.baths}</p>
                     </div>
                     <div>
                       <h3 className="font-medium">Square Feet</h3>
-                      <p>{property.sqft}</p>
+                      <p>{listing.sqft}</p>
                     </div>
-                    <div>
-                      <h3 className="font-medium">Lot Size</h3>
-                      <p>{property.lotSize}</p>
-                    </div>
-                    <div>
-                      <h3 className="font-medium">Year Built</h3>
-                      <p>{property.yearBuilt}</p>
-                    </div>
-                    <div>
-                      <h3 className="font-medium">Garage</h3>
-                      <p>{property.garage}</p>
-                    </div>
+                    {listing.lotSize && (
+                      <div>
+                        <h3 className="font-medium">Lot Size</h3>
+                        <p>{listing.lotSize}</p>
+                      </div>
+                    )}
+                    {listing.yearBuilt && (
+                      <div>
+                        <h3 className="font-medium">Year Built</h3>
+                        <p>{listing.yearBuilt}</p>
+                      </div>
+                    )}
+                    {listing.garage && (
+                      <div>
+                        <h3 className="font-medium">Garage</h3>
+                        <p>{listing.garage}</p>
+                      </div>
+                    )}
                   </div>
                 </div>
               </TabsContent>
               <TabsContent value="features" className="pt-6">
                 <div className="space-y-4">
                   <h2 className="text-2xl font-semibold">Features & Amenities</h2>
-                  <ul className="grid grid-cols-1 md:grid-cols-2 gap-2">
-                    {property.features.map((feature, index) => (
-                      <li key={index} className="flex items-center">
-                        <div className="h-2 w-2 rounded-full bg-primary mr-2" />
-                        {feature}
-                      </li>
-                    ))}
-                  </ul>
+                  {listing.features && listing.features.length > 0 ? (
+                    <ul className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                      {listing.features.map((feature, index) => (
+                        <li key={index} className="flex items-center">
+                          <div className="h-2 w-2 rounded-full bg-primary mr-2" />
+                          {feature}
+                        </li>
+                      ))}
+                    </ul>
+                  ) : (
+                    <p className="text-muted-foreground">No features listed for this property.</p>
+                  )}
                 </div>
               </TabsContent>
               <TabsContent value="map" className="pt-6">
@@ -169,7 +199,7 @@ export default function PropertyDetailPage({ params }: { params: { id: string } 
                   <div className="aspect-[16/9] bg-muted rounded-lg flex items-center justify-center">
                     <p className="text-muted-foreground">Map would be displayed here</p>
                   </div>
-                  <p className="text-muted-foreground">{property.address}</p>
+                  <p className="text-muted-foreground">{listing.address}</p>
                 </div>
               </TabsContent>
             </Tabs>
@@ -180,7 +210,7 @@ export default function PropertyDetailPage({ params }: { params: { id: string } 
           <Card>
             <CardContent className="p-6">
               <h2 className="text-xl font-semibold mb-4">Interested in this property?</h2>
-              <ContactForm property={property.title} />
+              <ContactForm property={listing.title} />
             </CardContent>
           </Card>
 

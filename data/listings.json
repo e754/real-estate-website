@@ -1,0 +1,85 @@
+[
+  {
+    "id": "prop1",
+    "title": "Modern Lakefront Villa",
+    "price": "$1,250,000",
+    "address": "123 Lakeview Dr, Lakeside, MA",
+    "description": "This stunning lakefront villa offers breathtaking views and luxury living. With 4 bedrooms, 3 bathrooms, and over 2,800 square feet of living space, this home provides ample room for family and guests.",
+    "beds": 4,
+    "baths": 3,
+    "sqft": 2800,
+    "yearBuilt": 2018,
+    "lotSize": "0.5 acres",
+    "garage": "2-car attached",
+    "type": "Single Family Home",
+    "features": [
+      "Lakefront Property",
+      "Private Dock",
+      "Gourmet Kitchen",
+      "Hardwood Floors"
+    ],
+    "imageSrc": "/placeholder.svg?height=300&width=400",
+    "images": [
+      "/placeholder.svg?height=600&width=800",
+      "/placeholder.svg?height=600&width=800",
+      "/placeholder.svg?height=600&width=800"
+    ],
+    "featured": true,
+    "createdAt": "2025-06-05T03:13:46.606Z",
+    "updatedAt": "2025-06-05T03:13:46.606Z"
+  },
+  {
+    "id": "prop2",
+    "title": "Downtown Luxury Condo",
+    "price": "$750,000",
+    "address": "456 Urban Ave, Boston, MA",
+    "description": "Luxury condo in the heart of downtown with amazing city views.",
+    "beds": 2,
+    "baths": 2,
+    "sqft": 1500,
+    "yearBuilt": 2020,
+    "type": "Condo",
+    "features": [
+      "City Views",
+      "Concierge Service",
+      "Fitness Center",
+      "Rooftop Deck"
+    ],
+    "imageSrc": "/placeholder.svg?height=300&width=400",
+    "images": [
+      "/placeholder.svg?height=600&width=800",
+      "/placeholder.svg?height=600&width=800"
+    ],
+    "featured": false,
+    "createdAt": "2025-06-05T03:13:46.606Z",
+    "updatedAt": "2025-06-05T03:13:46.606Z"
+  },
+  {
+    "id": "prop3",
+    "title": "Suburban Family Home",
+    "price": "$950,000",
+    "address": "789 Maple St, Framingham, MA",
+    "description": "Spacious family home in a quiet suburban neighborhood with excellent schools.",
+    "beds": 5,
+    "baths": 3.5,
+    "sqft": 3200,
+    "yearBuilt": 2015,
+    "lotSize": "0.3 acres",
+    "garage": "2-car attached",
+    "type": "Single Family Home",
+    "features": [
+      "Finished Basement",
+      "Large Backyard",
+      "Updated Kitchen",
+      "Home Office"
+    ],
+    "imageSrc": "/placeholder.svg?height=300&width=400",
+    "images": [
+      "/placeholder.svg?height=600&width=800",
+      "/placeholder.svg?height=600&width=800"
+    ],
+    "featured": false,
+    "createdAt": "2025-06-05T03:13:46.606Z",
+    "updatedAt": "2025-06-05T03:13:46.606Z"
+  }
+]

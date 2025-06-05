@@ -1,10 +1,10 @@
 "use client"
 
 import Link from "next/link"
-import { Button } from "@/components/ui/button"
-import { ModeToggle } from "@/components/mode-toggle"
+import { Button } from "../components/ui/button"
+import { ModeToggle } from "../components/mode-toggle"
 import { Menu } from "lucide-react"
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet"
+import { Sheet, SheetContent, SheetTrigger } from "../components/ui/sheet"
 import { useState } from "react"
 import { useMobile } from "@/hooks/use-mobile"
 import Image from "next/image"
@@ -16,6 +16,7 @@ export function Header() {
   const navItems = [
     { name: "Home", href: "/" },
     { name: "Listings", href: "/listings" },
+    { name: "Events", href: "/events" },
     { name: "About", href: "/about" },
     { name: "Contact", href: "/contact" },
   ]

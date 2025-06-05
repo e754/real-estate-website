@@ -1,11 +1,11 @@
 import Link from "next/link"
 import Image from "next/image"
-import { Button } from "@/components/ui/button"
+import { Button } from "../components/ui/button"
 import { Phone, Mail, MapPin, ArrowRight } from "lucide-react"
-import { PropertyCard } from "@/components/property-card"
-import { AgentProfile } from "@/components/agent-profile"
-import { TestimonialCard } from "@/components/testimonial-card"
-import { ContactForm } from "@/components/contact-form"
+import { PropertyCard } from "../components/property-card"
+import { AgentProfile } from "../components/agent-profile"
+import { TestimonialCard } from "../components/testimonial-card"
+import { ContactForm } from "../components/contact-form"
 
 export default function HomePage() {
   return (

@@ -6,7 +6,33 @@ import { PropertyCard } from "../components/property-card"
 import { AgentProfile } from "../components/agent-profile"
 import { TestimonialCard } from "../components/testimonial-card"
 import { ContactForm } from "../components/contact-form"
+import { createClient } from '@supabase/supabase-js'
+import { supabase } from './supabaseClient'
 
+async function fetchEvents() {
+  const { data, error } = await supabase
+    .from('Events') // <-- table name (case-sensitive)
+    .select('*')    // or select specific columns like 'id, title, date'
+  console.log(data)
+  if (error) {
+    console.error('Error fetching events:', error)
+  } else {
+    console.log('Events:', data)
+  }
+}
+
+async function uploadNewEvent() {
+  const { data, error } = await supabase
+    .insert(titles: casdas asjdasd:; asdasda)  // or select specific columns like 'id, title, date'
+  console.log(data)
+  if (error) {
+    console.error('Error fetching events:', error)
+  } else {
+    console.log('Events:', data)
+  }
+}
+
+fetchEvents()
 export default function HomePage() {
   return (
     <div className="flex flex-col min-h-screen">

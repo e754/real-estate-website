@@ -11,6 +11,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Card, CardContent } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Plus, X } from "lucide-react"
 import { EVENT_TYPE_LABELS } from "@/types/event"
 import type { Event } from "@/types/event"
 
@@ -31,6 +32,7 @@ export function EventForm({ event }: EventFormProps) {
       address: "",
       type: "open-house",
       image: "/placeholder.svg?height=300&width=400",
+      images: ["/placeholder.svg?height=600&width=800"],
       featured: false,
       registrationRequired: false,
       registrationUrl: "",
@@ -44,6 +46,27 @@ export function EventForm({ event }: EventFormProps) {
 
   const handleCheckboxChange = (name: string, checked: boolean) => {
     setFormData({ ...formData, [name]: checked })
+  }
+
+  // Обработка массива изображений
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+    const { value } = e.target
+    const updatedImages = [...(formData.images || [])]
+    updatedImages[index] = value
+    setFormData({ ...formData, images: updatedImages })
+  }
+
+  const addImageField = () => {
+    setFormData({
+      ...formData,
+      images: [...(formData.images || []), "/placeholder.svg?height=600&width=800"],
+    })
+  }
+
+  const removeImageField = (index: number) => {
+    const updatedImages = [...(formData.images || [])]
+    updatedImages.splice(index, 1)
+    setFormData({ ...formData, images: updatedImages })
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -80,7 +103,7 @@ export function EventForm({ event }: EventFormProps) {
       <Tabs defaultValue="details" className="w-full">
         <TabsList className="mb-4">
           <TabsTrigger value="details">Event Details</TabsTrigger>
-          <TabsTrigger value="media">Media</TabsTrigger>
+          <TabsTrigger value="media">Media & Photos</TabsTrigger>
           <TabsTrigger value="registration">Registration</TabsTrigger>
         </TabsList>
 
@@ -178,32 +201,99 @@ export function EventForm({ event }: EventFormProps) {
 
         <TabsContent value="media">
           <Card>
-            <CardContent className="pt-6 space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="image">Image URL</Label>
-                <Input
-                  id="image"
-                  name="image"
-                  value={formData.image}
-                  onChange={handleChange}
-                  placeholder="/images/event.jpg"
-                />
-              </div>
-
-              <div className="border rounded-md p-4">
-                <h3 className="text-sm font-medium mb-2">Image Preview</h3>
-                <div className="relative h-[200px] w-full">
-                  <Image
-                    src={formData.image || "/placeholder.svg?height=200&width=400"}
-                    alt="Event preview"
-                    fill
-                    className="object-cover rounded-md"
+            <CardContent className="pt-6 space-y-6">
+              {/* Main Image */}
+              <div className="space-y-4">
+                <div className="space-y-2">
+                  <Label htmlFor="image">Main Image URL (used for event cards)</Label>
+                  <Input
+                    id="image"
+                    name="image"
+                    value={formData.image}
+                    onChange={handleChange}
+                    placeholder="/images/event.jpg"
                   />
+                </div>
+
+                <div className="border rounded-md p-4">
+                  <h3 className="text-sm font-medium mb-2">Main Image Preview</h3>
+                  <div className="relative h-[200px] w-full">
+                    <Image
+                      src={formData.image || "/placeholder.svg?height=200&width=400"}
+                      alt="Event preview"
+                      fill
+                      className="object-cover rounded-md"
+                    />
+                  </div>
                 </div>
               </div>
 
-              <div className="text-sm text-muted-foreground">
-                <p>For production use, you would implement an image upload feature here.</p>
+              {/* Additional Images */}
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-medium">Additional Photos</h3>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={addImageField}
+                    className="flex items-center gap-2"
+                  >
+                    <Plus className="h-4 w-4" />
+                    Add Photo
+                  </Button>
+                </div>
+
+                <p className="text-sm text-muted-foreground">
+                  Add multiple photos to showcase your event. These will be displayed in a gallery on the event detail
+                  page.
+                </p>
+
+                {(formData.images || []).map((image, index) => (
+                  <div key={index} className="space-y-2 border rounded-md p-4">
+                    <div className="flex items-center justify-between">
+                      <Label htmlFor={`image-${index}`}>Photo {index + 1}</Label>
+                      <Button
+                        type="button"
+                        variant="ghost"
+                        size="sm"
+                        className="text-red-600 hover:text-red-700"
+                        onClick={() => removeImageField(index)}
+                      >
+                        <X className="h-4 w-4" />
+                      </Button>
+                    </div>
+                    <Input
+                      id={`image-${index}`}
+                      value={image}
+                      onChange={(e) => handleImageChange(e, index)}
+                      placeholder="/images/event-photo.jpg"
+                    />
+                    <div className="relative h-[120px] w-full">
+                      <Image
+                        src={image || "/placeholder.svg?height=120&width=200"}
+                        alt={`Photo ${index + 1}`}
+                        fill
+                        className="object-cover rounded-md"
+                      />
+                    </div>
+                  </div>
+                ))}
+
+                {(formData.images || []).length === 0 && (
+                  <div className="text-center py-8 border-2 border-dashed border-gray-300 rounded-md">
+                    <p className="text-muted-foreground">No additional photos added yet.</p>
+                    <p className="text-sm text-muted-foreground">Click "Add Photo" to add event photos.</p>
+                  </div>
+                )}
+              </div>
+
+              <div className="text-sm text-muted-foreground bg-blue-50 p-4 rounded-md">
+                <p className="font-medium mb-1">💡 Pro Tip:</p>
+                <p>
+                  For production use, you would implement an image upload feature here using services like Vercel Blob
+                  or Cloudinary.
+                </p>
               </div>
             </CardContent>
           </Card>

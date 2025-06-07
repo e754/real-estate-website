@@ -2,12 +2,13 @@ export interface Event {
   id: string
   title: string
   description: string
-  date: string // ISO date string
+  date: string
   time: string
   location: string
   address: string
   type: EventType
   image?: string
+  images?: string[] 
   featured?: boolean
   registrationRequired?: boolean
   registrationUrl?: string

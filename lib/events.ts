@@ -28,13 +28,18 @@ const initializeData = async () => {
         id: "event1",
         title: "Luxury Home Open House",
         description:
-          "Come tour this stunning 5-bedroom luxury home in the heart of Lakeside. Refreshments will be served.",
+          "Come tour this stunning 5-bedroom luxury home in the heart of Lakeside. Refreshments will be served, and our team will be available to answer any questions about the property and neighborhood.",
         date: "2025-06-15",
         time: "12:00 PM - 4:00 PM",
         location: "Lakefront Villa",
         address: "123 Lakeview Dr, Lakeside, MA",
         type: "open-house",
         image: "/placeholder.svg?height=300&width=400",
+        images: [
+          "/placeholder.svg?height=600&width=800",
+          "/placeholder.svg?height=600&width=800",
+          "/placeholder.svg?height=600&width=800",
+        ],
         featured: true,
         registrationRequired: false,
         createdAt: new Date().toISOString(),
@@ -44,13 +49,14 @@ const initializeData = async () => {
         id: "event2",
         title: "First-Time Homebuyer Seminar",
         description:
-          "Learn everything you need to know about buying your first home. Topics include financing, the buying process, and what to look for in a home.",
+          "Learn everything you need to know about buying your first home. Topics include financing, the buying process, what to look for in a home, and how to make competitive offers in today's market.",
         date: "2025-06-20",
         time: "6:00 PM - 8:00 PM",
         location: "Community Center",
         address: "456 Main St, Boston, MA",
         type: "seminar",
         image: "/placeholder.svg?height=300&width=400",
+        images: ["/placeholder.svg?height=600&width=800", "/placeholder.svg?height=600&width=800"],
         featured: true,
         registrationRequired: true,
         registrationUrl: "https://example.com/register",
@@ -59,17 +65,49 @@ const initializeData = async () => {
       },
       {
         id: "event3",
-        title: "Neighborhood BBQ",
+        title: "Neighborhood BBQ - Maple Heights",
         description:
-          "Join us for a fun community BBQ in the beautiful Maple Heights neighborhood. Meet your neighbors and learn about this wonderful community.",
-        date: "2025-07-04",
+          "Join us for a fun community BBQ in the beautiful Maple Heights neighborhood. Meet your neighbors, learn about this wonderful community, and enjoy great food and company.",
+        date: "2024-07-04",
         time: "11:00 AM - 3:00 PM",
         location: "Maple Heights Park",
         address: "789 Park Ave, Framingham, MA",
         type: "community",
         image: "/placeholder.svg?height=300&width=400",
+        images: [
+          "/placeholder.svg?height=600&width=800",
+          "/placeholder.svg?height=600&width=800",
+          "/placeholder.svg?height=600&width=800",
+          "/placeholder.svg?height=600&width=800",
+        ],
         featured: false,
         registrationRequired: false,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      },
+      {
+        id: "event4",
+        title: "Holiday Home Tour 2024",
+        description:
+          "Take a tour of beautifully decorated homes in the historic downtown area. Each home showcases unique holiday decorating styles and architectural features.",
+        date: "2024-12-15",
+        time: "10:00 AM - 4:00 PM",
+        location: "Historic Downtown",
+        address: "Downtown Boston, MA",
+        type: "neighborhood",
+        image: "/placeholder.svg?height=300&width=400",
+        images: [
+          "/placeholder.svg?height=600&width=800",
+          "/placeholder.svg?height=600&width=800",
+          "/placeholder.svg?height=600&width=800",
+          "/placeholder.svg?height=600&width=800",
+          "/placeholder.svg?height=600&width=800",
+          "/placeholder.svg?height=600&width=800",
+          "/placeholder.svg?height=600&width=800",
+        ],
+        featured: false,
+        registrationRequired: true,
+        registrationUrl: "https://example.com/holiday-tour",
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
       },
@@ -152,6 +190,17 @@ export async function getUpcomingEvents(): Promise<Event[]> {
   return events
     .filter((event) => new Date(event.date) >= today)
     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+}
+
+// Получение прошедших событий (события с датой < сегодня)
+export async function getPastEvents(): Promise<Event[]> {
+  const events = await getEvents()
+  const today = new Date()
+  today.setHours(0, 0, 0, 0)
+
+  return events
+    .filter((event) => new Date(event.date) < today)
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime()) // Newest first
 }
 
 // Получение избранных событий

@@ -23,12 +23,19 @@ async function fetchEvents() {
 
 async function uploadNewEvent() {
   const { data, error } = await supabase
-    .insert(titles: casdas asjdasd:; asdasda)  // or select specific columns like 'id, title, date'
-  console.log(data)
+    .from('Events') // table name
+    .insert([
+      {
+        title: 'My First Event',
+        date: '2025-06-06',
+        location: 'Boston'
+      }
+    ]);
+
   if (error) {
-    console.error('Error fetching events:', error)
+    console.error('Error uploading event:', error);
   } else {
-    console.log('Events:', data)
+    console.log('Uploaded event:', data);
   }
 }
 

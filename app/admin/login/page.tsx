@@ -23,12 +23,18 @@ export default function LoginPage() {
     setError("")
 
     try {
-      // Simple authentication check
-      if (email === "admin@example.com" && password === "password123") {
+      // Call API route for authentication
+      const res = await fetch("/api/admin-login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password })
+      })
+      const data = await res.json()
+      if (res.ok && data.success) {
         localStorage.setItem("admin_authenticated", "true")
         router.push("/admin")
       } else {
-        setError("Invalid email or password")
+        setError(data.message || "Invalid email or password")
       }
     } catch (error) {
       setError("An error occurred. Please try again.")

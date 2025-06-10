@@ -11,6 +11,11 @@ export async function GET() {
 }
 
 export async function POST(request: NextRequest) {
+  // Check for admin authentication cookie
+  const cookie = request.cookies.get("admin_authenticated")
+  if (!cookie || cookie.value !== "true") {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+  }
   try {
     const body = await request.json()
     const event = await createEvent(body)

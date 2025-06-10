@@ -15,13 +15,21 @@ interface EventCardProps {
 export function EventCard({ event }: EventCardProps) {
   return (
     <Card className="overflow-hidden">
-      <div className="relative h-48">
-        <Image
-          src={event.image || "/placeholder.svg?height=300&width=400"}
-          alt={event.title}
-          fill
-          className="object-cover"
-        />
+      <div className="relative h-80 bg-gray-100 flex items-center justify-center">
+        {event.image ? (
+          <Image
+            src={event.image}
+            alt={event.title}
+            fill
+            className="object-contain"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+          />
+        ) : (
+          <div className="text-gray-500 text-center">
+            <div className="text-4xl mb-2">📷</div>
+            <p className="text-sm">No image available</p>
+          </div>
+        )}
         <Badge className="absolute top-2 right-2" variant={event.type === "open-house" ? "default" : "secondary"}>
           {EVENT_TYPE_LABELS[event.type]}
         </Badge>

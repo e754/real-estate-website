@@ -19,6 +19,30 @@ interface EventFormProps {
   event?: Event
 }
 
+// Add this helper function to upload a file
+async function uploadImage(file: File): Promise<string | null> {
+  const formData = new FormData()
+  formData.append("file", file)
+  
+  try {
+    const res = await fetch("/api/upload", {
+      method: "POST",
+      body: formData,
+    })
+    
+    if (res.ok) {
+      const data = await res.json()
+      return data.url // The URL returned by your upload API
+    } else {
+      console.error("Upload failed:", res.statusText)
+      return null
+    }
+  } catch (error) {
+    console.error("Upload error:", error)
+    return null
+  }
+}
+
 export function EventForm({ event }: EventFormProps) {
   const router = useRouter()
   const [isLoading, setIsLoading] = useState(false)
@@ -31,8 +55,8 @@ export function EventForm({ event }: EventFormProps) {
       location: "",
       address: "",
       type: "open-house",
-      image: "/placeholder.svg?height=300&width=400",
-      images: ["/placeholder.svg?height=600&width=800"],
+      image: "",
+      images: [],
       featured: false,
       registrationRequired: false,
       registrationUrl: "",
@@ -48,7 +72,7 @@ export function EventForm({ event }: EventFormProps) {
     setFormData({ ...formData, [name]: checked })
   }
 
-  // Обработка массива изображений
+  // Handle array of images
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
     const { value } = e.target
     const updatedImages = [...(formData.images || [])]
@@ -57,10 +81,10 @@ export function EventForm({ event }: EventFormProps) {
   }
 
   const addImageField = () => {
-    setFormData({
-      ...formData,
-      images: [...(formData.images || []), "/placeholder.svg?height=600&width=800"],
-    })
+    setFormData(prev => ({
+      ...prev,
+      images: [...(prev.images || []), ""],
+    }))
   }
 
   const removeImageField = (index: number) => {
@@ -69,11 +93,70 @@ export function EventForm({ event }: EventFormProps) {
     setFormData({ ...formData, images: updatedImages })
   }
 
+  // Handle main image upload
+  const handleMainImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      setIsLoading(true)
+      try {
+        // For now, create a local URL for preview
+        const localUrl = URL.createObjectURL(file)
+        setFormData(prev => ({ ...prev, image: localUrl }))
+        
+        // Upload to server (you'll need to implement this endpoint)
+        const uploadedUrl = await uploadImage(file)
+        if (uploadedUrl) {
+          // Replace with server URL when upload completes
+          setFormData(prev => ({ ...prev, image: uploadedUrl }))
+        } else {
+          console.warn("Upload failed, keeping local preview")
+        }
+      } catch (error) {
+        console.error("Error uploading main image:", error)
+        // Keep the local preview even if upload fails
+      } finally {
+        setIsLoading(false)
+      }
+    }
+  }
+
+  // Handle additional image upload
+  const handleAdditionalImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      setIsLoading(true)
+      try {
+        // Create local URL for immediate preview
+        const localUrl = URL.createObjectURL(file)
+        const updatedImages = [...(formData.images || [])]
+        updatedImages[index] = localUrl
+        setFormData(prev => ({ ...prev, images: updatedImages }))
+        
+        // Upload to server
+        const uploadedUrl = await uploadImage(file)
+        if (uploadedUrl) {
+          // Replace with server URL when upload completes
+          const finalImages = [...(formData.images || [])]
+          finalImages[index] = uploadedUrl
+          setFormData(prev => ({ ...prev, images: finalImages }))
+        } else {
+          console.warn("Upload failed, keeping local preview")
+        }
+      } catch (error) {
+        console.error("Error uploading additional image:", error)
+        // Keep the local preview even if upload fails
+      } finally {
+        setIsLoading(false)
+      }
+    }
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsLoading(true)
 
     try {
+      // Fixed the template literal syntax here
       const url = event ? `/api/events/${event.id}` : "/api/events"
       const method = event ? "PUT" : "POST"
 
@@ -90,9 +173,11 @@ export function EventForm({ event }: EventFormProps) {
         router.refresh()
       } else {
         console.error("Failed to save event")
+        alert("Failed to save event. Please try again.")
       }
     } catch (error) {
       console.error("Error saving event:", error)
+      alert("Error saving event. Please try again.")
     } finally {
       setIsLoading(false)
     }
@@ -205,25 +290,46 @@ export function EventForm({ event }: EventFormProps) {
               {/* Main Image */}
               <div className="space-y-4">
                 <div className="space-y-2">
-                  <Label htmlFor="image">Main Image URL (used for event cards)</Label>
-                  <Input
-                    id="image"
-                    name="image"
-                    value={formData.image}
-                    onChange={handleChange}
-                    placeholder="/images/event.jpg"
-                  />
+                  <Label htmlFor="image">Main Image (used for event cards)</Label>
+                  <div className="relative inline-block">
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="sm"
+                      className="flex items-center gap-2 bg-white border border-gray-300 hover:bg-red-600 hover:text-white hover:border-red-700 transition-colors"
+                      asChild
+                    >
+                      <label htmlFor="main-image-upload" className="cursor-pointer">
+                        <Plus className="h-4 w-4 mr-1" />
+                        Choose File
+                      </label>
+                    </Button>
+                    <input
+                      id="main-image-upload"
+                      type="file"
+                      accept="image/*"
+                      onChange={handleMainImageUpload}
+                      disabled={isLoading}
+                      className="hidden"
+                    />
+                  </div>
                 </div>
-
                 <div className="border rounded-md p-4">
                   <h3 className="text-sm font-medium mb-2">Main Image Preview</h3>
-                  <div className="relative h-[200px] w-full">
-                    <Image
-                      src={formData.image || "/placeholder.svg?height=200&width=400"}
-                      alt="Event preview"
-                      fill
-                      className="object-cover rounded-md"
-                    />
+                  <div className="relative w-48 h-48 bg-gray-100 rounded-md flex items-center justify-center overflow-hidden">
+                    {formData.image ? (
+                      <Image
+                        src={formData.image}
+                        alt="Event preview"
+                        fill
+                        className="object-contain rounded-md"
+                      />
+                    ) : (
+                      <div className="text-gray-500 text-center">
+                        <div className="text-4xl mb-2">📷</div>
+                        <p>No image selected</p>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -264,18 +370,26 @@ export function EventForm({ event }: EventFormProps) {
                       </Button>
                     </div>
                     <Input
-                      id={`image-${index}`}
-                      value={image}
-                      onChange={(e) => handleImageChange(e, index)}
-                      placeholder="/images/event-photo.jpg"
+                      id={`additional-image-upload-${index}`}
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => handleAdditionalImageUpload(e, index)}
+                      disabled={isLoading}
                     />
-                    <div className="relative h-[120px] w-full">
-                      <Image
-                        src={image || "/placeholder.svg?height=120&width=200"}
-                        alt={`Photo ${index + 1}`}
-                        fill
-                        className="object-cover rounded-md"
-                      />
+                    <div className="relative w-32 h-32 bg-gray-100 rounded-md flex items-center justify-center overflow-hidden">
+                      {image ? (
+                        <Image
+                          src={image}
+                          alt={`Photo ${index + 1}`}
+                          fill
+                          className="object-contain rounded-md"
+                        />
+                      ) : (
+                        <div className="text-gray-500 text-center">
+                          <div className="text-2xl mb-1">📷</div>
+                          <p className="text-sm">No image selected</p>
+                        </div>
+                      )}
                     </div>
                   </div>
                 ))}

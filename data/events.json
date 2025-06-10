@@ -1,20 +1,5 @@
 [
   {
-    "id": "event1",
-    "title": "Luxury Home Open House",
-    "description": "Come tour this stunning 5-bedroom luxury home in the heart of Lakeside. Refreshments will be served.",
-    "date": "2025-06-15",
-    "time": "12:00 PM - 4:00 PM",
-    "location": "Lakefront Villa",
-    "address": "123 Lakeview Dr, Lakeside, MA",
-    "type": "open-house",
-    "image": "/placeholder.svg?height=300&width=400",
-    "featured": true,
-    "registrationRequired": false,
-    "createdAt": "2025-06-05T03:53:11.191Z",
-    "updatedAt": "2025-06-05T03:53:11.191Z"
-  },
-  {
     "id": "event2",
     "title": "First-Time Homebuyer Seminar",
     "description": "Learn everything you need to know about buying your first home. Topics include financing, the buying process, and what to look for in a home.",
@@ -23,12 +8,15 @@
     "location": "Community Center",
     "address": "456 Main St, Boston, MA",
     "type": "seminar",
-    "image": "/placeholder.svg?height=300&width=400",
+    "image": "/uploads/Screenshot 2025-06-09 at 10.28.13 PM_1749522498869.png",
     "featured": true,
     "registrationRequired": true,
     "registrationUrl": "https://example.com/register",
     "createdAt": "2025-06-05T03:53:11.191Z",
-    "updatedAt": "2025-06-05T03:53:11.191Z"
+    "updatedAt": "2025-06-10T02:28:26.137Z",
+    "images": [
+      "/uploads/Screenshot 2025-06-09 at 10.21.36 AM_1749522504924.png"
+    ]
   },
   {
     "id": "event3",
@@ -39,10 +27,32 @@
     "location": "Maple Heights Park",
     "address": "789 Park Ave, Framingham, MA",
     "type": "community",
-    "image": "/placeholder.svg?height=300&width=400",
+    "image": "/uploads/Screenshot 2025-06-09 at 10.28.46 PM_1749522534574.png",
     "featured": false,
     "registrationRequired": false,
     "createdAt": "2025-06-05T03:53:11.191Z",
-    "updatedAt": "2025-06-05T03:53:11.191Z"
+    "updatedAt": "2025-06-10T02:29:15.953Z",
+    "images": [
+      "/uploads/Screenshot 2025-06-09 at 10.28.46 PM_1749522554096.png"
+    ]
+  },
+  {
+    "id": "mbpwv2a8f11z9k0cszc",
+    "title": "Asasd",
+    "description": "sada",
+    "date": "2025-06-10",
+    "time": "12:00 PM - 2:00 PM",
+    "location": "asd",
+    "address": "sad",
+    "type": "open-house",
+    "image": "/uploads/bbq_1749523058935.jpg",
+    "images": [
+      "/uploads/2-sec-1_1749523063940.png"
+    ],
+    "featured": false,
+    "registrationRequired": false,
+    "registrationUrl": "",
+    "createdAt": "2025-06-10T02:37:47.216Z",
+    "updatedAt": "2025-06-10T02:37:47.216Z"
   }
 ]

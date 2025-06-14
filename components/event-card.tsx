@@ -1,6 +1,6 @@
 import Link from "next/link"
 import Image from "next/image"
-import { Calendar, Clock, MapPin } from "lucide-react"
+import { Calendar, Clock, MapPin, Users } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
@@ -13,6 +13,8 @@ interface EventCardProps {
 }
 
 export function EventCard({ event }: EventCardProps) {
+  const isPastEvent = new Date(event.date) < new Date()
+
   return (
     <Card className="overflow-hidden">
       <div className="relative h-80 bg-gray-100 flex items-center justify-center">
@@ -33,6 +35,11 @@ export function EventCard({ event }: EventCardProps) {
         <Badge className="absolute top-2 right-2" variant={event.type === "open-house" ? "default" : "secondary"}>
           {EVENT_TYPE_LABELS[event.type]}
         </Badge>
+        {isPastEvent && (
+          <Badge className="absolute top-2 left-2 bg-red-600 text-white">
+            Past Event
+          </Badge>
+        )}
       </div>
       <CardContent className="pt-6">
         <h3 className="text-xl font-bold mb-2">{event.title}</h3>
@@ -52,10 +59,18 @@ export function EventCard({ event }: EventCardProps) {
         </div>
         <p className="line-clamp-2">{event.description}</p>
       </CardContent>
-      <CardFooter>
-        <Button asChild className="w-full">
+      <CardFooter className="flex gap-2">
+        <Button asChild className="flex-1">
           <Link href={`/events/${event.id}`}>View Details</Link>
         </Button>
+        {!isPastEvent && (
+          <Button asChild variant="outline" className="flex-1">
+            <Link href={`/events/${event.id}`} className="flex items-center gap-1">
+              <Users className="h-4 w-4" />
+              Register
+            </Link>
+          </Button>
+        )}
       </CardFooter>
     </Card>
   )

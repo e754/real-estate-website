@@ -1,6 +1,6 @@
 import Link from "next/link"
 import { notFound } from "next/navigation"
-import { Calendar, Clock, MapPin, ArrowLeft, Share2, Users } from "lucide-react"
+import { Calendar, Clock, MapPin, ArrowLeft, Share2 } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -9,7 +9,6 @@ import { getEventById } from "@/lib/events"
 import { EVENT_TYPE_LABELS } from "@/types/event"
 import { AgentProfile } from "@/components/agent-profile"
 import { EventPhotoGallery } from "@/components/event-photo-gallery"
-import { EventRegistrationForm } from "@/components/event-registration-form"
 
 interface EventDetailProps {
   id: string
@@ -95,14 +94,30 @@ export async function EventDetail({ id }: EventDetailProps) {
 
         <div className="space-y-6">
           {!isPastEvent ? (
-            <EventRegistrationForm event={event} />
+            event.registrationRequired ? (
+              <Card>
+                <CardContent className="p-6">
+                  <h2 className="text-xl font-semibold mb-4">Registration Required</h2>
+                  <p className="mb-4">Please register to attend this event.</p>
+                  <Button className="w-full" asChild>
+                    <a href={event.registrationUrl || "#"} target="_blank" rel="noopener noreferrer">
+                      Register Now
+                    </a>
+                  </Button>
+                </CardContent>
+              </Card>
+            ) : (
+              <Card>
+                <CardContent className="p-6">
+                  <h2 className="text-xl font-semibold mb-4">No Registration Required</h2>
+                  <p>Just show up! We look forward to seeing you there.</p>
+                </CardContent>
+              </Card>
+            )
           ) : (
             <Card>
               <CardContent className="p-6">
-                <h2 className="text-xl font-semibold mb-4 flex items-center gap-2">
-                  <Users className="h-5 w-5" />
-                  Event Completed
-                </h2>
+                <h2 className="text-xl font-semibold mb-4">Event Completed</h2>
                 <p className="mb-4">This event has already taken place. Thank you to everyone who attended!</p>
                 <Button variant="outline" className="w-full" asChild>
                   <Link href="/events">View Upcoming Events</Link>

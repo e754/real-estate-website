@@ -26,3 +26,11 @@ export const EVENT_TYPE_LABELS: Record<EventType, string> = {
   neighborhood: "Neighborhood Event",
   other: "Other Event",
 }
+
+export interface EventRegistration {
+  firstName: string
+  lastName: string
+  email: string
+  phone?: string
+  message?: string
+}
